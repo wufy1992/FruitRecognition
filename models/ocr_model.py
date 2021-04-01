@@ -14,6 +14,7 @@ from keras.layers import (
         Conv2D,
         Activation,
         MaxPooling2D,
+        Dropout,
         BatchNormalization)
 from keras.layers.advanced_activations import LeakyReLU
 
@@ -22,7 +23,7 @@ def relu():
     return LeakyReLU(alpha=0.01)
 
 
-def conv_unit(input_tensor, nb_filters, mp=False, dropout=None):
+def conv_unit(input_tensor, nb_filters, mp=False, dropout=0.1):
     """
     one conv-relu-bn unit
     """
@@ -33,6 +34,7 @@ def conv_unit(input_tensor, nb_filters, mp=False, dropout=None):
 
     if mp:
         x = MaxPooling2D(pool_size=(3, 3), strides=(2, 2), padding='same')(x)
+    x = Dropout(dropout)(x)
 
     return x
 
@@ -65,14 +67,14 @@ def get_model(input_dim, category_num):
     x = BatchNormalization(momentum=0.66)(x)
     x = conv_unit(x, 128)
     x = conv_unit(x, 128, mp=True)
-    x = conv_unit(x, 256)
-    x = conv_unit(x, 256, mp=True)
-    x = conv_unit(x, 384)
-    x = conv_unit(x, 384)
-    x = conv_unit(x, 384, mp=True)
-    x = conv_unit(x, 512)
-    x = conv_unit(x, 512)
-    x = conv_unit(x, 512, mp=True)
+    # x = conv_unit(x, 256)
+    # x = conv_unit(x, 256, mp=True)
+    # x = conv_unit(x, 384)
+    # x = conv_unit(x, 384)
+    # x = conv_unit(x, 384, mp=True)
+    # x = conv_unit(x, 512)
+    # x = conv_unit(x, 512)
+    # x = conv_unit(x, 512, mp=True)
     x = out_block(x, category_num)
     model = Model(inputs=inputs, outputs=x)
     return model
